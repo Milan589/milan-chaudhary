@@ -5,7 +5,7 @@ export const profile = {
     "I build reliable and user-friendly web applications to solve complex problems.",
   location: "Lalitpur, Nepal",
   company: "IT Hive Solutions Pvt. Ltd.",
-  avatar: "public/milan.jpeg",
+  avatar: "/milan.jpeg",
   email: "milanchaudhary589@gmail.com",
   github: "https://github.com/Milan589",
   linkedin: "https://www.linkedin.com/in/milan-chaudhary-5b0a1921b",
@@ -13,7 +13,7 @@ export const profile = {
     "A passionate Full-Stack Developer with knowledge of web and mobile application development. ",
     "Experienced in working with Next.js, React.js, TypeScript, Laravel, PHP, and databases such as PostgreSQL, MySQL, MongoDB, and Supabase. Hardworking and eager to learn new technologies, with the ability to research and find effective solutions to problems. Always focused on improving technical skills and building reliable, user-friendly applications.",
   ],
-  cvPdf: "public/resume_file.pdf",
+  cvPdf: "/resume_file.pdf",
 };
 
 export const experience = [
