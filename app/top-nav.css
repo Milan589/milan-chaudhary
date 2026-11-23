@@ -1,0 +1,40 @@
+
+
+.topnav { position: sticky; top: 0; z-index: 15; background: #fff; border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+/* no overflow here: it would clip the mobile dropdown */
+.topnav-inner { position: relative; z-index: 2; max-width: 1120px; height: 56px; margin: 0 auto; padding: 0 1.25rem; display: flex; align-items: center; justify-content: space-between; background: #fff; }
+
+/* ---- Mobile (default) ---- */
+.topnav-current { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; color: var(--navy); }
+.topnav-toggle { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-right: -.6rem; border: 0; border-radius: 8px; background: transparent; color: var(--navy); cursor: pointer; }
+.topnav-toggle:hover { background: var(--alt); }
+
+.topnav-links { position: absolute; top: 100%; left: 0; right: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; padding: .75rem 1.25rem 1.25rem; background: #fff; border-bottom: 1px solid var(--line); max-height: calc(100dvh - 56px); overflow-y: auto;
+  opacity: 0; visibility: hidden; transform: translateY(-8px);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s .18s; }
+.topnav-links[data-open="true"] { opacity: 1; visibility: visible; transform: none; transition: opacity .18s ease, transform .18s ease; }
+
+.topnav-links a { display: flex; align-items: center; gap: .5rem; min-height: 44px; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); text-decoration: none; font-weight: 500; white-space: nowrap; }
+.topnav-links a:hover { color: var(--navy); background: var(--alt); }
+.topnav-links a[aria-current="page"] { color: var(--navy); font-weight: 600; background: var(--brand-soft); border-color: transparent; }
+.topnav-links a:last-child:nth-child(odd) { grid-column: 1 / -1; }  /* 7 links: CV spans full row */
+
+/* tap-outside layer, sits behind the bar and dropdown */
+.topnav-scrim { position: fixed; inset: 0; z-index: 1; background: rgba(15, 27, 45, .35); opacity: 0; visibility: hidden; transition: opacity .18s ease, visibility 0s .18s; }
+.topnav-scrim[data-open="true"] { opacity: 1; visibility: visible; transition: opacity .18s ease; }
+
+/* ---- Desktop: your original underline tabs, now with icons ---- */
+@media (min-width: 861px) {
+  .topnav-current, .topnav-toggle, .topnav-scrim { display: none; }
+  .topnav-inner { height: auto; justify-content: flex-start; background: none; }
+  .topnav-links { position: static; display: flex; gap: .25rem; padding: 0; border: 0; max-height: none; background: none;
+    overflow-x: auto; opacity: 1; visibility: visible; transform: none; transition: none; }  /* scrolls if 7 tabs don't fit */
+  .topnav-links a { min-height: 0; padding: 1rem .9rem; border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; }
+  .topnav-links a:hover { background: none; }
+  .topnav-links a[aria-current="page"] { background: none; border-bottom-color: var(--navy-2); }
+  .topnav-links a:focus-visible { outline-offset: -3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topnav-links, .topnav-scrim { transition: none; }
+}

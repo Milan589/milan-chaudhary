@@ -1,58 +1,159 @@
+
 "use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Home,
+  User,
+  Briefcase,
+  LayoutGrid,
+  GraduationCap,
+  Mail,
+  FileText,
+  Menu,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 
-const icons: Record<string, string> = {
-  Home: "M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10",
-  About: "M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6",
-  Experience: "M3 7h18v13H3zM9 7V4h6v3M3 13h18",
-  Projects: "M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z",
-  Education: "M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5",
-  Contact: "M3 5h18v14H3zM3 6l9 7 9-7",
-  CV: "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7",
+type NavLink = { label: string; href: string; icon: LucideIcon };
+
+export type Profile = {
+  name: string;
+  title: string;
+  photo?: string; // e.g. "/me.jpg"; falls back to initials
+  description?: string;
+  meta?: string[]; // e.g. ["Kathmandu, Nepal", "Open to work"]
+  links?: { label: string; href: string }[]; // e.g. GitHub, LinkedIn
 };
 
-const links = [
-  ["Home", "/"],
-  ["About", "/about"],
-  ["Experience", "/experience"],
-  ["Projects", "/projects"],
-  ["Education", "/education"],
-  ["Contact", "/contact"],
-  ["CV", "/cv"],
+const links: NavLink[] = [
+  { label: "Home", href: "/", icon: Home },
+  { label: "About", href: "/about", icon: User },
+  { label: "Experience", href: "/experience", icon: Briefcase },
+  { label: "Projects", href: "/projects", icon: LayoutGrid },
+  { label: "Education", href: "/education", icon: GraduationCap },
+  { label: "Contact", href: "/contact", icon: Mail },
+  { label: "CV", href: "/cv", icon: FileText },
 ];
 
-export default function TopNav() {
-  const path = usePathname();
+export default function TopNav({ profile }: { profile?: Profile }) {
+  const path = usePathname() ?? "/";
+  const [open, setOpen] = useState(false);
 
-  const active = (href: string) =>
-    href === "/" ? path === "/" : path.startsWith(href);
+  const isActive = (href: string) =>
+    href === "/" ? path === "/" : path === href || path.startsWith(href + "/");
+
+  const current = links.find((l) => isActive(l.href)) ?? links[0];
+  const CurrentIcon = current.icon;
+
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 861px)");
+    const onChange = () => mq.matches && setOpen(false);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const initials = profile?.name
+    .split(" ")
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("");
+
   return (
     <nav className="topnav" aria-label="Primary">
       <div className="topnav-inner">
-        {links.map(([label, href]) => (
-          <Link
-            key={href}
-            href={href}
-            aria-current={active(href) ? "page" : undefined}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              width="17"
-              height="17"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d={icons[label]} />
-            </svg>
-            {label}
+        {/* Mobile only: profile (replaces the hidden sidebar) or current page */}
+        {profile ? (
+          <Link href="/" className="topnav-brand">
+            <span className="topnav-avatar" aria-hidden="true">
+              {profile.photo ? <img src={profile.photo} alt="" /> : initials}
+            </span>
+            <span className="topnav-brand-text">
+              <strong>{profile.name}</strong>
+              <span>{profile.title}</span>
+            </span>
           </Link>
-        ))}
+        ) : (
+          <span className="topnav-current" aria-hidden="true">
+            <CurrentIcon size={18} strokeWidth={1.8} />
+            {current.label}
+          </span>
+        )}
+
+        <button
+          type="button"
+          className="topnav-toggle"
+          aria-expanded={open}
+          aria-controls="topnav-panel"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
+
+        {/* Dropdown on mobile, plain tab row on desktop */}
+        <div id="topnav-panel" className="topnav-panel" data-open={open}>
+          {profile && (
+            <div className="topnav-profile">
+              {profile.description && <p>{profile.description}</p>}
+              {profile.meta && (
+                <ul>
+                  {profile.meta.map((m) => (
+                    <li key={m}>{m}</li>
+                  ))}
+                </ul>
+              )}
+              {profile.links && (
+                <div className="topnav-profile-links">
+                  {profile.links.map((l) => (
+                    <a key={l.href} href={l.href}>
+                      {l.label}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="topnav-links">
+            {links.map(({ label, href, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                aria-current={isActive(href) ? "page" : undefined}
+              >
+                <Icon size={17} strokeWidth={1.8} aria-hidden="true" />
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
+
+      <div
+        className="topnav-scrim"
+        data-open={open}
+        aria-hidden="true"
+        onClick={() => setOpen(false)}
+      />
     </nav>
   );
 }

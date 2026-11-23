@@ -5,6 +5,7 @@ import TopNav from "@/components/TopNav";
 // import Footer from "@/components/Footer";
 import { profile } from "@/data/profile";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 const serif = Newsreader({
   subsets: ["latin"],
@@ -49,7 +50,7 @@ export default function RootLayout({
           <div className="main">
             <TopNav />
             <main>{children}</main>
-            {/* <Footer /> */}
+            <Footer />
           </div>
         </div>
       </body>

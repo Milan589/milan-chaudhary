@@ -5,8 +5,7 @@ export const profile = {
     "I build reliable and user-friendly web applications to solve complex problems.",
   location: "Lalitpur, Nepal",
   company: "IT Hive Solutions Pvt. Ltd.",
-  avatar: "", // e.g. "/profile.jpg" (file in /public). Leave empty to show initials.
-  cvPdf: "/cv.pdf", // put your CV in /public/cv.pdf
+  avatar: "/milan.jpeg",
   email: "milanchaudhary589@gmail.com",
   github: "https://github.com/Milan589",
   linkedin: "https://www.linkedin.com/in/milan-chaudhary-5b0a1921b",
@@ -14,6 +13,7 @@ export const profile = {
     "A passionate Full-Stack Developer with knowledge of web and mobile application development. ",
     "Experienced in working with Next.js, React.js, TypeScript, Laravel, PHP, and databases such as PostgreSQL, MySQL, MongoDB, and Supabase. Hardworking and eager to learn new technologies, with the ability to research and find effective solutions to problems. Always focused on improving technical skills and building reliable, user-friendly applications.",
   ],
+  cvPdf: "/resume_file.pdf",
 };
 
 export const experience = [
@@ -126,14 +126,14 @@ export const skills = [
   },
   { group: "Backend", items: ["Node.js", "Laravel", "REST APIs", "Zod"] },
   { group: "Database", items: ["PostgreSQL", "MySQL", "MongoDB", "Supabase"] },
-  { group: "Auth and tools", items: ["Clerk", "Git", "GitHub"] },
+  { group: "Auth and tools", items: ["Clerk", "Git", "GitHub", "VS-Code"] },
 ];
 
 export const education = [
   {
     degree: "Bachelors in Computer Science and Information Technology",
     school:
-      "Orchid International College, Tribhuvan University, (November 2018 - August 2023)",
+      "Orchid International College, Tribhuvan University, Kathmandu, (November 2018 - August 2023)",
     period: "November 2018 – August 2023",
     notes: [
       "Grade: First Division (71.40%)",
@@ -142,7 +142,8 @@ export const education = [
   },
   {
     degree: "+2 in Science (Physics, Chemistry, Mathematics)",
-    school: "Padmodaya Public Model Secondary School, (July 2016 - May 2018)",
+    school:
+      "Padmodaya Public Model Secondary School, Dang,(July 2016 - May 2018)",
     period: "July 2016 – May 2018",
     notes: ["Grade: 2.71 (GPA)"],
   },
@@ -150,7 +151,7 @@ export const education = [
   {
     degree: "SLC",
     school:
-      "Deepshiksha Higher Secondary Boarding School, (May 2003 - June 2016)",
+      "Deepshiksha Higher Secondary Boarding School, Dang,(May 2003 - June 2016)",
     period: "May 2003 – June 2016",
     notes: ["Grade: 3.05 (GPA)"],
   },
