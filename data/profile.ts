@@ -65,7 +65,7 @@ export const projects = [
   {
     slug: "school-rating-system",
     name: "School Rating System – Mahalaxmi Municipality",
-    period: "Jan 2024 – May 2024",
+    period: "January 2024 – May 2024",
     role: "Full-Stack Developer",
     summary:
       "A web-based system for managing school information and evaluating schools based on their facilities, services, and infrastructure.",
@@ -116,6 +116,53 @@ export const projects = [
     link: "https://nepalifutsal.com/",
     repo: "https://github.com/Santosh9001/futsal-nepal-backend",
   },
+  {
+  slug: "arsenal-nepal-app",
+  name: "Arsenal Nepal App",
+  period: "January 2023 - August 2023",
+  role: "Flutter Developer",
+  summary:
+    "A mobile application providing Arsenal FC supporters with club information, match scores, and match history.",
+  overview:
+    "Developed a Flutter-based mobile application for Arsenal supporters in Nepal to access club-related information, view match scores, and explore previous match results and history.",
+  highlights: [
+    "Developed a cross-platform mobile application using Flutter and Dart.",
+    "Displayed Arsenal FC match scores and previous match results.",
+    "Provided club-related information for Arsenal supporters.",
+  ],
+  stack: ["Flutter", "Dart"],
+  link: "",
+  repo: "https://github.com/IT-Hive-Solutions/Arsenal_Nepal_Flutter",
+},
+{
+  slug: "pooja-samagri-dashboard",
+  name: "Pooja Samagri – Online Shopping Platform",
+  period: "December 2023 - January 2024",
+  role: "Full-Stack Developer",
+  summary:
+    "A web and mobile e-commerce platform for purchasing Hindu worship products and packages through online ordering and payment.",
+  overview:
+    "Developed a Laravel-based dashboard integrated with third-party APIs to manage products, worship packages, customers, orders, and payments. The platform supports online purchasing of Pooja Samagri products and packages, providing customers with a convenient shopping experience.",
+  highlights: [
+    "Developed an administrative dashboard using Laravel.",
+    "Integrated third-party APIs for application functionality.",
+    "Implemented product and Pooja package management.",
+    "Developed customer and order management functionality.",
+    "Integrated payment processing for online purchases.",
+    "Supported product and package purchasing through the online platform.",
+  ],
+  stack: [
+    "Laravel",
+    "PHP",
+    "MySQL",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "REST API",
+  ],
+  link: "",
+  repo: "https://github.com/IT-Hive-Solutions/Pooja_App_Dashboard_with_Laravel",
+}
 ];
 
 export const skills = [
@@ -124,9 +171,9 @@ export const skills = [
     group: "Frontend",
     items: ["React", "Next.js (App Router)", "HTML", "CSS"],
   },
-  { group: "Backend", items: ["Node.js", "Laravel", "REST APIs", "Zod"] },
+  { group: "Backend", items: ["Node.js", "Laravel", "REST APIs", "Zod","Prisma"] },
   { group: "Database", items: ["PostgreSQL", "MySQL", "MongoDB", "Supabase"] },
-  { group: "Auth and tools", items: ["Clerk", "Git", "GitHub", "VS-Code"] },
+  { group: "Auth and tools", items: ["Clerk", "Git", "GitHub", "VS Code", "Postman"] },
 ];
 
 export const education = [
@@ -141,7 +188,7 @@ export const education = [
     ],
   },
   {
-    degree: "+2 in Science (Physics, Chemistry, Mathematics)",
+    degree: "+2 in Science (Physics, Chemistry, Mathematics, Computer Science)",
     school:
       "Padmodaya Public Model Secondary School, Dang,(July 2016 - May 2018)",
     period: "July 2016 – May 2018",
@@ -163,6 +210,4 @@ export const certifications = [
     issuer: "School Of Information Technology",
     date: "August 2022",
   },
-  // { name: "Certificate name", issuer: "Issuer", date: "Month Year" },
-  // { name: "Certificate name", issuer: "Issuer", date: "Month Year" },
 ];

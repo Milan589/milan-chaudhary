@@ -1,5 +1,5 @@
+
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import {
   Building2,
   Download,
@@ -10,34 +10,7 @@ import {
 } from "lucide-react";
 import { profile } from "@/data/profile";
 
-const topStyle: CSSProperties = { textAlign: "center" };
-const avatarStyle: CSSProperties = { margin: "0 auto 1rem" };
-const listStyle: CSSProperties = {
-  listStyle: "none",
-  margin: 0,
-  padding: 0,
-  display: "grid",
-  gap: "1rem",
-};
-const itemStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: ".9rem",
-  color: "inherit",
-  textDecoration: "none",
-};
-const cvStyle: CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: ".5rem",
-};
-
-const iconProps = {
-  size: 16,
-  "aria-hidden": true,
-  style: { flexShrink: 0 },
-} as const;
+const iconProps = { size: 17, strokeWidth: 1.8, "aria-hidden": true } as const;
 
 export default function Sidebar() {
   const initials = profile.name
@@ -45,15 +18,12 @@ export default function Sidebar() {
     .map((p) => p[0])
     .join("")
     .slice(0, 2);
+
   return (
     <aside className="sidebar" aria-label="Profile">
-      <div className="side-top" style={topStyle}>
-        <Link
-          href="/"
-          className="avatar"
-          style={avatarStyle}
-          aria-label={`${profile.name}, home`}
-        >
+      <div className="side-top">
+        <div className="side-banner" aria-hidden="true" />
+        <Link href="/" className="avatar" aria-label={`${profile.name}, home`}>
           {profile.avatar ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={profile.avatar} alt="" />
@@ -64,53 +34,60 @@ export default function Sidebar() {
         <p className="side-name">{profile.name}</p>
         <p className="side-title">{profile.title}</p>
       </div>
+
       <div className="side-body">
         <p className="side-desc">{profile.about[0]}</p>
-        <ul style={listStyle}>
-          <li style={itemStyle}>
-            <MapPin {...iconProps} />
-            {profile.location}
-          </li>
-          <li style={itemStyle}>
-            <Building2 {...iconProps} />
-            {profile.company}
+
+        <ul className="side-list">
+          <li>
+            <span className="side-item">
+              <span className="side-icon">
+                <MapPin {...iconProps} />
+              </span>
+              {profile.location}
+            </span>
           </li>
           <li>
-            <a style={itemStyle} href={`mailto:${profile.email}`}>
-              <Mail {...iconProps} />
-              Email
-            </a>
-          </li>
-          <li>
-            <a
-              style={itemStyle}
-              href={profile.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github {...iconProps} />
-              GitHub
-            </a>
-          </li>
-          <li>
-            <a
-              style={itemStyle}
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Linkedin {...iconProps} />
-              LinkedIn
-            </a>
+            <span className="side-item">
+              <span className="side-icon">
+                <Building2 {...iconProps} />
+              </span>
+              {profile.company}
+            </span>
           </li>
         </ul>
+
+        <div className="side-socials">
+          <a className="side-social" href={`mailto:${profile.email}`}>
+            <Mail size={19} strokeWidth={1.8} aria-hidden="true" />
+            Email
+          </a>
+          <a
+            className="side-social"
+            href={profile.github}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github size={19} strokeWidth={1.8} aria-hidden="true" />
+            GitHub
+          </a>
+          <a
+            className="side-social"
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Linkedin size={19} strokeWidth={1.8} aria-hidden="true" />
+            LinkedIn
+          </a>
+        </div>
+
         <a
           className="btn btn-dark side-cv"
-          style={cvStyle}
           href={profile.cvPdf}
           download={`${profile.name}-resume.pdf`}
         >
-          <Download {...iconProps} />
+          <Download size={17} aria-hidden="true" />
           Download CV
         </a>
       </div>
