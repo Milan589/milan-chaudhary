@@ -7,7 +7,8 @@ import { CheckCircle2, Loader2, Send } from "lucide-react";
 
 
 import { Errors, Field, LIMITS, validateAll, validateField } from "./contactValidation";
-import { ContactState, sendMessage } from "./constant/actions";
+import { ContactState, sendMessage } from "@/functions/api/contact";
+
 
 
 const initialState: ContactState = {

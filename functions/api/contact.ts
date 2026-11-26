@@ -1,9 +1,7 @@
 "use server";
 
-import { Errors, validateAll, Values } from "../contactValidation";
-import { contactHtml, contactSubject, contactText } from "./contactEmail";
-
-
+import { contactHtml, contactSubject, contactText } from "@/components/constant/contactEmail";
+import { Errors, validateAll, Values } from "@/components/contactValidation";
 
 export type ContactState = {
   status: "idle" | "success" | "error";
