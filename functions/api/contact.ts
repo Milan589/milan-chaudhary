@@ -1,73 +1,73 @@
-"use server";
+/// <reference types="@cloudflare/workers-types" />
 
-import { contactHtml, contactSubject, contactText } from "@/components/constant/contactEmail";
-import { Errors, validateAll, Values } from "@/components/contactValidation";
-
-export type ContactState = {
-  status: "idle" | "success" | "error";
-  message: string;
-  errors: Errors;
-  values: Values;
-};
-
-export async function sendMessage(
-  _prev: ContactState,
-  formData: FormData
-): Promise<ContactState> {
-  const name = String(formData.get("name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim();
-  const message = String(formData.get("message") ?? "").trim();
-  const honeypot = String(formData.get("website") ?? "");
-  const values = { name, email, message };
-
-  // Bots fill the hidden field. Pretend it worked.
-  if (honeypot) {
-    return { status: "success", message: "Thanks! Your message has been sent.", errors: {}, values: { name: "", email: "", message: "" } };
-  }
-
-  const errors = validateAll(values);
-
-  if (Object.keys(errors).length > 0) {
-    return { status: "error", message: "Please fix the highlighted fields.", errors, values };
-  }
-
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.CONTACT_TO_EMAIL;
-  if (!apiKey || !to) {
-    console.error("Contact form: RESEND_API_KEY or CONTACT_TO_EMAIL is not set.");
-    return { status: "error", message: "The contact form isn't set up yet. Please email me directly.", errors: {}, values };
-  }
-
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: process.env.CONTACT_FROM_EMAIL ?? "Portfolio <onboarding@resend.dev>",
-        to: [to],
-        reply_to: email, // hitting Reply answers the visitor
-        subject: contactSubject(values),
-        html: contactHtml(values),
-        text: contactText(values), // plain-text fallback
-      }),
-    });
-
-    if (!res.ok) {
-      console.error("Contact form: Resend error", res.status, await res.text());
-      return { status: "error", message: "Sorry, your message couldn't be sent. Please try again or email me directly.", errors: {}, values };
-    }
-  } catch (err) {
-    console.error("Contact form: network error", err);
-    return { status: "error", message: "Network problem. Please try again in a moment.", errors: {}, values };
-  }
-
-  return {
-    status: "success",
-    message: "Thanks! Your message has been sent. I'll reply by email soon.",
-    errors: {},
-    values: { name: "", email: "", message: "" },
-  };
+interface Env {
+  RESEND_API_KEY: string;
+  CONTACT_TO_EMAIL: string;
+  CONTACT_FROM_EMAIL?: string;
+  CONTACT_TIMEZONE?: string;
 }
+
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+  let data: Record<string, string>;
+  try {
+    data = await request.json();
+  } catch {
+    return json({ ok: false, error: "Invalid request" }, 400);
+  }
+
+  const name = String(data.name ?? "").trim();
+  const email = String(data.email ?? "").trim();
+  const message = String(data.message ?? "").trim();
+
+  // Honeypot: pretend success for bots
+  if (data.website) return json({ ok: true });
+
+  if (!name || !email || !message || name.length > 100 || email.length > 200 || message.length > 5000) {
+    return json({ ok: false, error: "Invalid fields" }, 400);
+  }
+
+  if (!env.RESEND_API_KEY || !env.CONTACT_TO_EMAIL) {
+    console.error("Missing RESEND_API_KEY or CONTACT_TO_EMAIL");
+    return json({ ok: false, error: "Not configured" }, 500);
+  }
+
+  const when = new Date().toLocaleString("en-US", {
+    timeZone: env.CONTACT_TIMEZONE ?? "Asia/Kathmandu",
+  });
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: env.CONTACT_FROM_EMAIL ?? "Portfolio <onboarding@resend.dev>",
+      to: [env.CONTACT_TO_EMAIL],
+      reply_to: email,
+      subject: `New message from ${name}`,
+      html: `<h2>New contact message</h2>
+             <p><b>Name:</b> ${esc(name)}</p>
+             <p><b>Email:</b> ${esc(email)}</p>
+             <p><b>Sent:</b> ${esc(when)}</p>
+             <p style="white-space:pre-wrap">${esc(message)}</p>`,
+      text: `From: ${name} <${email}>\nSent: ${when}\n\n${message}`,
+    }),
+  });
+
+  if (!res.ok) {
+    console.error("Resend error", res.status, await res.text());
+    return json({ ok: false, error: "Send failed" }, 502);
+  }
+
+  return json({ ok: true });
+};
