@@ -64,9 +64,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     }),
   });
 
-  if (!res.ok) {
-    console.error("Resend error", res.status, await res.text());
-    return json({ ok: false, error: "Send failed" }, 502);
+   if (!res.ok) {
+    const detail = await res.text();
+    console.error("Resend error", res.status, detail);
+    return json({ ok: false, error: "Send failed", resendStatus: res.status, detail }, 502);
   }
 
   return json({ ok: true });
