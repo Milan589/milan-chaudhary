@@ -6,27 +6,16 @@ import { Moon, Sun } from "lucide-react";
 type Theme = "light" | "dark";
 const KEY = "theme";
 
+/**
+ * Default is ALWAYS light. Dark only after the visitor clicks the toggle
+ * (saved in localStorage). The system dark-mode setting is ignored.
+ */
 export default function ThemeToggle() {
-
   const [theme, setTheme] = useState<Theme | null>(null);
 
+  // sync with what the inline script in layout.tsx already applied
   useEffect(() => {
-    const root = document.documentElement;
-    setTheme(root.dataset.theme === "dark" ? "dark" : "light");
-
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onSystemChange = (e: MediaQueryListEvent) => {
-      let saved: string | null = null;
-      try {
-        saved = localStorage.getItem(KEY);
-      } catch {}
-      if (saved) return;
-      const next: Theme = e.matches ? "dark" : "light";
-      root.dataset.theme = next;
-      setTheme(next);
-    };
-    mq.addEventListener("change", onSystemChange);
-    return () => mq.removeEventListener("change", onSystemChange);
+    setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
   }, []);
 
   const toggle = () => {

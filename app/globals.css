@@ -120,76 +120,120 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--navy-2); outlin
   body { background: #fff; }
 }
 
-/* ===== Top navigation ===== */
-.topnav { position: sticky; top: 0; z-index: 15; background: #fff; border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
-.topnav-inner { position: relative; z-index: 2; max-width: 1120px; height: 64px; margin: 0 auto; padding: 0 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: .75rem; background: #fff; }
+/* =====================================================================
+   TOP NAVIGATION: complete CSS (dropdown TopNav.tsx)
+   Selectors are prefixed with .topnav and critical layout rules use
+   !important so older/dark-theme nav rules can't override them.
+   Colors use theme variables so dark mode keeps working.
+   ===================================================================== */
 
-/* ---- Mobile (default) ---- */
-.topnav-current {
-  display: inline-flex; align-items: center; gap: .5rem;
-  min-height: 44px; padding: 0; border: 0; background: none;
-  font: inherit; font-weight: 600; color: var(--navy); cursor: pointer;
+/* ---------- Shared ---------- */
+.topnav {
+  position: sticky; top: 0; z-index: 15;
+  background: var(--surface, #fff); border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
 }
-.topnav-brand { display: inline-flex; align-items: center; gap: .7rem; min-width: 0; text-decoration: none; }
-.topnav-avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--navy-2); overflow: hidden; display: grid; place-items: center; background: var(--brand-soft); color: var(--navy); font-family: var(--font-serif), Georgia, serif; font-size: 1.1rem; }
-.topnav-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.topnav-brand-text { display: grid; min-width: 0; line-height: 1.25; }
-.topnav-brand-text strong { font-family: var(--font-serif), Georgia, serif; font-size: 1.1rem; color: var(--navy); }
-.topnav-brand-text span { font-size: .85rem; color: var(--brand); font-weight: 600; }
-
-.topnav-toggle { flex: none; display: inline-grid; place-items: center; width: 44px; height: 44px; margin-right: -.6rem; border: 0; border-radius: 8px; background: transparent; color: var(--navy); cursor: pointer; }
-.topnav-toggle:hover { background: var(--alt); }
-
-/* Side drawer */
-.topnav-panel {
-  position: fixed; top: 0; bottom: 0; left: 0;
-  width: min(320px, 85vw);
-  padding: calc(1rem + env(safe-area-inset-top, 0px)) 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
-  background: #fff; border-right: 1px solid var(--line);
-  box-shadow: 8px 0 24px rgba(15, 27, 45, .12);
-  overflow-y: auto; overscroll-behavior: contain;
-  transform: translateX(-100%); visibility: hidden;
-  transition: transform .25s ease, visibility 0s .25s;
+/* no overflow here: it would clip the mobile dropdown */
+.topnav .topnav-inner {
+  position: relative; z-index: 2;
+  max-width: 1120px; margin: 0 auto; padding: 0 1.25rem;
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  background: var(--surface, #fff);
 }
-.topnav-panel[data-open="true"] { transform: none; visibility: visible; transition: transform .25s ease; }
+.topnav .topnav-actions { display: flex; align-items: center; gap: .4rem; flex: none; margin-left: auto; }
 
-.topnav-close {
-  display: inline-grid; place-items: center; width: 44px; height: 44px;
-  margin: 0 -.6rem .5rem auto; border: 0; border-radius: 8px;
-  background: transparent; color: var(--navy); cursor: pointer;
+.topnav .topnav-links a {
+  display: flex; align-items: center; gap: .5rem;
+  color: var(--muted); text-decoration: none; font-weight: 500; white-space: nowrap;
+  transition: color .2s ease, background .2s ease, border-color .2s ease;
 }
-.topnav-close:hover { background: var(--alt); }
+.topnav .topnav-links a svg { flex: none; }
+.topnav .topnav-links a:hover { color: var(--navy); }
+.topnav .topnav-links a[aria-current="page"] { color: var(--navy); font-weight: 600; }
 
-.topnav-profile { display: grid; gap: .75rem; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--line); }
-.topnav-profile p { margin: 0; font-size: .92rem; color: var(--muted); }
-.topnav-profile ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; font-size: .92rem; }
-.topnav-profile-links { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .92rem; }
-
-.topnav-links { display: grid; grid-template-columns: 1fr; gap: .5rem; }
-.topnav-links a { display: flex; align-items: center; gap: .5rem; min-height: 44px; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); text-decoration: none; font-weight: 500; white-space: nowrap; }
-.topnav-links a:hover { color: var(--navy); background: var(--alt); }
-.topnav-links a[aria-current="page"] { color: var(--navy); font-weight: 600; background: var(--brand-soft); border-color: transparent; }
-
-.topnav-scrim { position: fixed; inset: 0; z-index: 1; background: rgba(15, 27, 45, .35); opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility 0s .25s; }
-.topnav-scrim[data-open="true"] { opacity: 1; visibility: visible; transition: opacity .25s ease; }
-
-/* ---- Desktop: sidebar shows the profile, nav is underline tabs ---- */
+/* ---------- Desktop (>=861px): pill tab bar, no mobile pieces ---------- */
 @media (min-width: 861px) {
-  .topnav-current, .topnav-brand, .topnav-toggle, .topnav-scrim, .topnav-profile, .topnav-close { display: none; }
-  .topnav-inner { height: auto; justify-content: flex-start; background: none; }
-  .topnav-panel {
-    position: static; flex: 1; min-width: 0; width: auto;
-    padding: 0; border: 0; box-shadow: none; background: none; overflow: visible;
-    transform: none; visibility: visible; transition: none;
+  .topnav .topnav-home,
+  .topnav .topnav-toggle,
+  .topnav .topnav-scrim { display: none !important; }
+
+  .topnav .topnav-inner { height: auto; justify-content: flex-start; background: none; padding-block: .6rem; }
+
+  .topnav .topnav-links {
+    position: static !important; display: inline-flex !important; flex: 0 1 auto; min-width: 0;
+    gap: .25rem; padding: .35rem; overflow-x: auto;
+    border: 1px solid var(--line); border-radius: 999px; background: var(--alt);
+    opacity: 1 !important; visibility: visible !important; transform: none !important; transition: none;
   }
-  .topnav-links { display: flex; gap: .25rem; overflow-x: auto; }
-  .topnav-links a { min-height: 0; padding: 1rem .9rem; border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; }
-  .topnav-links a:hover { background: none; }
-  .topnav-links a[aria-current="page"] { background: none; border-bottom-color: var(--navy-2); }
-  .topnav-links a:focus-visible { outline-offset: -3px; }
+  .topnav .topnav-links a { padding: .6rem 1.1rem; border-radius: 999px; border: 0; }
+  .topnav .topnav-links a:hover { background: var(--brand-soft); }
+  .topnav .topnav-links a[aria-current="page"] { background: var(--brand-soft); }
+  .topnav .topnav-links a:focus-visible { outline-offset: -2px; }
+}
+
+/* ---------- Mobile (<=860px): bar + dropdown, Home always listed ---------- */
+@media (max-width: 860px) {
+  .topnav .topnav-inner { height: 64px; }
+
+
+  .topnav .topnav-home,
+  .topnav .topnav-toggle {
+    display: inline-grid !important; place-items: center; flex: none;
+    width: 44px; height: 44px; margin: 0;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface, #fff); color: var(--navy); cursor: pointer; text-decoration: none;
+    transition: background .2s ease, color .2s ease;
+  }
+  .topnav .topnav-home:hover,
+  .topnav .topnav-toggle:hover { background: var(--alt); }
+  .topnav .topnav-home[aria-current="page"] { background: var(--brand-soft); color: var(--brand); }
+
+  /* the dropdown: full width, directly under the bar */
+  .topnav .topnav-links {
+    position: absolute !important; top: 100%; left: 0; right: 0; width: auto;
+    display: flex !important; flex-direction: column; gap: .5rem;
+    padding: .75rem 1.25rem 1.25rem;
+    background: var(--surface, #fff); border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+    max-height: calc(100dvh - 64px); overflow-y: auto; overflow-x: hidden;
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: opacity .18s ease, transform .18s ease, visibility 0s .18s;
+  }
+  .topnav .topnav-links[data-open="true"] {
+    opacity: 1; visibility: visible; transform: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+
+  .topnav .topnav-links a {
+    width: 100%; flex: none; min-height: 48px; padding: 0 1rem;
+    border: 1px solid var(--line); border-radius: 12px; background: var(--surface, #fff);
+  }
+  .topnav .topnav-links a:hover { background: var(--alt); }
+  .topnav .topnav-links a[aria-current="page"] { background: var(--brand-soft); border-color: transparent; }
+
+  /* tap-outside layer, behind the bar and dropdown */
+  .topnav .topnav-scrim {
+    display: block !important; position: fixed; inset: 0; z-index: 1;
+    background: rgba(15, 27, 45, .45);
+    opacity: 0; visibility: hidden;
+    transition: opacity .18s ease, visibility 0s .18s;
+  }
+  .topnav .topnav-scrim[data-open="true"] { opacity: 1; visibility: visible; transition: opacity .18s ease; }
+}
+
+/* ---------- Motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes nav-item-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .topnav .topnav-links[data-open="true"] a { animation: nav-item-in .3s ease backwards; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(1) { animation-delay: .03s; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(2) { animation-delay: .06s; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(3) { animation-delay: .09s; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(4) { animation-delay: .12s; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(5) { animation-delay: .15s; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(6) { animation-delay: .18s; }
+  .topnav .topnav-links[data-open="true"] a:nth-child(7) { animation-delay: .21s; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .topnav-panel, .topnav-scrim { transition: none; }
+  .topnav .topnav-links, .topnav .topnav-scrim, .topnav .topnav-links a { transition: none; animation: none; }
 }
 
 /* ===== CV page ===== */
@@ -301,7 +345,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--navy-2); outlin
 .btn:active { transform: translateY(0) scale(.98); }
 .contact { transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .contact:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(15, 27, 45, .1); }
-.topnav-links a { transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease; }
 .side-links a, .side-cv .btn { transition: color .2s ease, transform .2s ease; }
 .side-links a:hover { transform: translateX(3px); }
 
@@ -454,15 +497,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--navy-2); outlin
   .side-body > :nth-child(3) { animation-delay: .29s; }
   .side-body > :nth-child(4) { animation-delay: .36s; }
 
-  /* Mobile drawer: stagger links on open */
-  .topnav-panel[data-open="true"] .topnav-links a { animation: slide-in-left .35s ease backwards; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(1) { animation-delay: .06s; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(2) { animation-delay: .10s; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(3) { animation-delay: .14s; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(4) { animation-delay: .18s; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(5) { animation-delay: .22s; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(6) { animation-delay: .26s; }
-  .topnav-panel[data-open="true"] .topnav-links a:nth-child(7) { animation-delay: .30s; }
 
   /* Project detail: highlights slide in one by one */
   .bullets li { animation: slide-in-left .45s ease backwards; }
@@ -666,5 +700,3 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--navy-2); outlin
   .field [aria-invalid="true"] { animation: shake .35s ease; }
   .field-error { animation: hero-rise .25s ease backwards; }
 }
-
-
