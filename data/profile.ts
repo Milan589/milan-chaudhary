@@ -166,7 +166,7 @@ export const projects = [
     summary:
       "A web and mobile e-commerce platform for purchasing Hindu worship products and packages through online ordering and payment.",
     overview:
-      "Developed a Laravel-based dashboard integrated with third-party APIs to manage products, worship packages, customers, orders, and payments. The platform supports online purchasing of Pooja Samagri products and packages, providing customers with a convenient shopping experience.",
+      "Developed a Laravel-based admin dashboard integrated with third-party APIs to manage products, Pooja Samagri packages, customers, orders, and payments. The dashboard enables administrators to manage product listings, monitor customer orders, and oversee payment transactions efficiently.",
     highlights: [
       "Developed an administrative dashboard using Laravel.",
       "Integrated third-party APIs for application functionality.",
